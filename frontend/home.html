@@ -1,0 +1,41 @@
+<html>
+    <%@ taglib prefix="json" uri="http://www.atg.com/taglibs/json" %>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="stylesheet.css">
+        <title>Ormelia's One-Stop Shop</title>
+    </head>
+    <body>
+            <p>Welcome</p>
+
+            <h2>Products</h2>
+            <div> 
+                <table >
+                    <tr>
+                        <th>Code</th>
+                        <th>Description</th> 
+                        <th>Price</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+
+                    <c:forEach var="item" items="${products}">
+                        <tr>
+                            <td></td>
+                            <td></td> 
+                            <td></td>
+
+                            
+                            <td><button type="button" id="editProduct">Edit</button></td>
+                            <td><button type="button" id="addProduct">Delete</button></td>
+                        </tr>
+                    </c:forEach>
+                </table>
+                <br />
+                <a href="/addProduct"><button type="button" id="addProduct">Add Product</button></a>
+
+
+            </div>
+       
+    </body>
+</html>

@@ -1,0 +1,34 @@
+h2{
+    color: darkcyan;
+    font-family: calibri;
+}
+table, th, td{
+    border: 1px solid black;
+    text-align: center;
+    border-collapse: collapse;
+    padding: 10px;
+}
+
+button, input[type=submit]{
+    border-radius: 8px;
+    padding: 5px;
+    background-color:lightblue;
+    min-width: 80px;
+}
+
+.productsButtons{
+    margin-left:100px;
+}
+.rightButtons{
+    margin-left:230px;
+}
+.inputs{
+    display:inline-block;
+    position:fixed;
+    left:110px;
+    width: 180px;
+}
+i{
+    position:fixed;
+    left: 110px;
+}
