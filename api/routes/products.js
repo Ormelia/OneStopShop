@@ -1,155 +1,271 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-
+//
+const expressModule = require('express')
+const corsModule = require('cors'); 
+const express = expressModule()
+const bodyPareser = require('body-parser')
+const axiosModule = require('axios')
+const axios = axiosModule.default
+const sqlite3Handler = require('sqlite3').verbose();
+const swaggerJSCodeModule = require('swagger-jsdoc')
+const swaggerUIExpressModule = require('swagger-ui-express')
+//
 const Product = require('../models/product');
 let productsArray = [];
-
-router.get('/', (req, res, next) => {
-    Product.find()
-    .select('name price _id')
-    .exec()
-    .then(docs => {
-        const response = {
-            count: docs.length,
-            products: docs.map(doc => {
-                return {
-                    name: doc.name,
-                    price: doc.price,
-                    _id: doc._id,
-                    request: {
-                        type: 'GET',
-                        url: 'http://localhost:3000/products/' + doc._id
-                    }
-                }
-            })
-        };
-        // if(docs.length >= 0){
-            res.status(200).json(response);
-        // } else {
-        //     res.status(404).json({
-        //         message: 'No entries found'
-        //     });
-        // }
-    })
-    .catch(err => {
-        console.log(docs);
-        res.status(500).json({
-            error: err
-        });
-    });
-    
-});
-
-router.post('/', (req, res, next) => {
-    const product = new Product({
-        _id: req.body.id,
-        name: req.body.name,
-        price: req.body.price
-    });
-    product
-    .save()
-    .then(result => {
-        console.log(result);
-        res.status(201).json({
-            message: 'Product created', 
-            createdProduct: {
-                name: result.name,
-                price: result.price,
-                _id: result._id,
-                request: {
-                    type: 'GET',
-                    url: 'http://localhost:3000/proucts/'+result._id
-                }
+//////////////////////////////////////////////////
+const swaggerOpts = {
+    swaggerDefinition: {
+        info: {
+            title: 'One Stop Shop', 
+            description: 'One Stop Shop Documentation', 
+            constact: {
+                name: 'Ormelia Robinson', 
+                email: 'orobins5@uncc.edu'
             }
-          });
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    });
-    productsArray.push(product);
-    console.log(product);
-});
+        }, 
+        servers: ['http://167.172.150.145:5000 odr']
+    }, 
+    apis: ['products.js'] 
+}
 
-router.get('/:productId', (req, res, next) => {
-    const id = req.params.productId;
-    Product.findById(id)
-    .select('name price _id')
-    .exec()
-    .then(doc => {
-        console.log("From database", doc);
-        if(doc) {
-            res.status(200).json({
-                product: doc,
-                request: {
-                    type: 'GET',
-                    description: 'Get all products',
-                    url: 'http://localhost:3000/products'
-                }
-            });
-        } else {
-            res
-                .status(404)
-                .json({message: 'No valid entry found for provided id'});
-        }
-    })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({error: err});
-    });
+const swaggerDocs = swaggerJSCodeModule(swaggerOpts);
+express.use('/docs', swaggerUIExpressModule.serve, swaggerUIExpressModule.setup(swaggerDocs))
 
-});
 
-router.patch('/:productId', (req, res, next) => {
-    const id = req.params.productId;
-    const updateOps = {};
-    for(const ops of req.body){
-        updateOps[ops.propName] = ops.value;
+
+let database = new sqlite3Handler.Database('storeDB', (err)=>{
+    if (err){
+        console.log(err.message)
     }
-    Product.update({_id: id}, {$set: updateOps })
-    .exec()
-    .then( result => {
-        res.status(200).json({
-            message: 'Product updated',
-            request: {
-                type: 'GET',
-                url: 'http://localhost:3000/products/'+ id
-            }
-        });
+    else {
+        console.log('Connection Successful')
+    }
+}); 
+
+
+express.use(corsModule())
+express.use(bodyPareser.urlencoded({extended: false}))
+express.use(bodyPareser.json());
+////////////////////////////////////////////////////
+
+// Adds a product
+/**
+ * @swagger 
+ * /products: 
+ *  post: 
+ *     name: Adding a product
+ *     summary: Adds a product to the shop
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             productCode:
+ *               type: string
+ *             productDesc:
+ *               type: string
+ *             productPrice:
+ *               type: integer
+ *         required:
+ *           - productCode
+ *           - productDesc
+ *           - productPrice
+ *     responses:
+ *       '200':
+ *         description: Product successfully added
+ *       '404':
+ *         description: Error adding product
+ *       '500':
+ *         description: Database Connection Problem
+ */
+express.post('/products', function (req, res){
+    console.log(req.body)
+    database.run('INSERT INTO users (productCode, productDesc, productPrice) VALUES (?,?,?)', 
+    [
+        req.body.productCode, 
+        req.body.productDesc, 
+        req.body.productPrice
+    ], 
+    (addError)=>{
+        event = {'Error': "", 'Data': ""}
+        if (addError){
+            event.error = addError
+            event.data = ""
+        } else {
+            event.data = 'Successfully Added ' 
+        }
+        res.json(event)
     })
-    .catch(err => {
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    });
-});
+})
 
-router.delete('/:productId', (req, res, next) => {
-    const id = req.params.productId;
-    Product.remove({_id: id})
-    .exec()
-    .then(result => {
-        res.status(200).json({
-            message: 'Product deleted',
-            request: {
-                type: 'POST',
-                url: 'http://localhost:3000/products/',
-                body: {name: 'String', price: 'Number'}
-
-            }
-        });
+// Displays a list of all the products in the shop 
+/**
+ * @swagger 
+ * /products: 
+ *  get: 
+ *     name: Display all products
+ *     summary: This will show all of the products in the shop
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       '200':
+ *         description: Products successfully displayed
+ *       '404':
+ *         description: No products in database
+ *       '500':
+ *         description: Database connection problem
+ */
+express.get('/products', function(req, res){
+    database.all('SELECT * FROM products', (err, result) => {
+        event = {'Error': "", 'Data': ""}
+        if(err){
+            event.error = err
+            event.data = ""
+        } else {
+            event.data = result
+        }
+        res.json(err)
     })
-    .catch(err =>{
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    });
-    productsArray.splice(productsArray.indexOf(id), 1);
-});
+})
 
-module.exports = router;
+// Get a product
+/**
+ * @swagger 
+ * /products/{id}: 
+ *  get: 
+ *     name: Get a product
+ *     summary: Retrieves specific product from the shop
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required:
+ *           - id
+ *     responses:
+ *       '200':
+ *         description: Product retrieved
+ *       '404':
+ *         description: No product with that code
+ *       '500':
+ *         description: Database Connection Problem
+ */
+express.get('/products/:id', function(req, res){
+    console.log('Product ID: ', req.params.id)
+    database.all('SELECT * FROM products WHERE productCode = ?', [req.params.id], (err, result)=>{
+        event = {'error': "", 'data': ""}
+        if (err){
+            event.error = err
+            event.data = ""
+        } else {
+            event.data = result 
+        }
+        res.json(event)
+    })
+})
+
+
+// Update a product
+/**
+ * @swagger 
+ * /products/{id}: 
+ *  put: 
+ *     name: Update a product
+ *     summary: Updates a product in the shop
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: body
+ *         in: body
+ *         schema:
+ *           type: object
+ *           properties:
+ *             productCode:
+ *               type: string
+ *             productDesc:
+ *               type: string
+ *             productPrice:
+ *               type: integer
+ *         required:
+ *            productCode
+ *            productDesc
+ *            productPrice
+ *     responses:
+ *       '200':
+ *         description: Product successfully updated
+ *       '404':
+ *         description: No product with <productCode> in database
+ *       '500':
+ *         description: Database Connection Problem
+ */
+express.put('/product/:id', function (req, res){
+    console.log(req.body)
+    dbHandler.run('UPDATE users SET productDesc = ?, productPrice = ? WHERE productCode = ?', 
+    [
+        req.body.productDesc,
+        req.body.productPrice,  
+        req.body.id
+    ], (err)=>{
+        event = {'Error': "", 'Data': ""}
+        if (err){
+            event.error = err
+            event.data = ""
+        } else {
+            event.data = 'Updated Successfully' 
+        }
+        res.json(event)
+    })
+})
+
+// Delete user Profile 
+/**
+ * @swagger
+ * /products/{id}:
+ *   delete:
+ *     name: Deletes a product
+ *     summary: Removes a product from the store
+ *     consumes:
+ *       - application/json
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required:
+ *           - productCode
+ *     responses:
+ *       '200':
+ *         description: Product successfully deleted
+ *       '404':
+ *         description: No product with <productCode> in database
+ *       '500':
+ *         description: Database Connection Problem
+ */
+express.delete('/products/:id', function(req, res){
+    console.log(req.params.id)
+    database.run('DELETE FROM products WHERE productCode = ?', [req.params.id], (deleteError)=>{
+        event = {'Error': "", 'Data': ""}
+        if (deleteError){
+            event.error = deleteError
+            event.data = ""
+        } else {
+            event.data = 'Record has been deleted Successfully ' 
+        }
+        res.json(event)
+    })
+})
+
+express.listen(3000)
