@@ -1,77 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ormelia's One Stop Shop</title>
-    <link rel='stylesheet' type='text/css' href='style.css' />
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-</head>
-<body>
-  <div class="nav">
-    <ul>
-      <li><button name='addform' onclick='addForm()'>Add Product</button></li>
-      <li>|</li>
-      <li><button name='displayProducts' onclick="displayProducts()">Display Products</button></li> 
-    </ul>
-  </div>
-  <div class="content">
-    <div><h1>Products</h1></div>
-    <div class='homepage' id='homepage'>Select Button</div>
-    <div class='add_product' id='add_product'>
-      <form name='add_product' method='POST'>
-        <table>
-          <tr>
-            <td>Code</td>
-            <td><input type='input' name='productCode' value=""/> </td>
-          </tr>
-          <tr>
-            <td>Description</td>
-            <td><input type='input' name='productDesc' value=""/> </td>
-          </tr>
-          <tr>
-            <td>Price</td>
-            <td><input type='input' name='productPrice' value=""/> </td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <button name='add' onclick='return addProduct()'>Add Product</button>
-              <button name='goBack' onclick='displayProducts()'>Display Products</button>
-            </td>
-          </tr>
-        </table>
-      </form>
-    </div>
-    <div class='display_products' id='display_products'></div>
-    <div class='edit_products' id='edit_products'>
-      <form name='edit_products'>
-        <table>
-          <tr>
-            <td>Product ID</td>
-            <td><span id='userID'></span></td>
-          </tr>
-          <tr>
-            <td>Code:</td>
-            <td><input type='input' name='productCode' value=""/> </td>
-          </tr>
-          <tr>
-            <td>Description:</td>
-            <td><input type='input' name='productDesc' value=""/> </td>
-          </tr>
-          <tr>
-            <td>Price:</td>
-            <td><input type='input' name='productPrice' value=""/> </td>
-          </tr>
-          <tr>
-            <td colspan="2">
-              <button name='save' onclick='return editProduct()'>Update Product</button>
-              <button name='goBack' onclick='displayProducts()'>Display Products</button>
-            </td>
-          </tr>
-        </table>
-      </form>
-    </div>
-  </div>
-  <script src='connect.js'></script>
-</body>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" type="text/css" href="stylesheet.css">
+        <title>One Stop Shop</title>
+    </head>
+    <body>
+          <h2>Products</h2>
+          <div> 
+              <table >
+                  <tr>
+                      <th>Code</th>
+                      <th>Description</th> 
+                      <th>Price</th>
+                      <th></th>
+                      <th></th>
+                  </tr>
+                      <tr>
+                          <td>${item.code}</td>
+                          <td>${item.description}</td> 
+                          <td>${item.priceCurrencyFormat}</td>
+
+
+                          <td><button name = editButton onclick='return editProduct()'>Edit</button></td>
+                          <td><button name = deleteButton onclick='return deleteProduct()'>Delete</Button></td>
+                      </tr>
+              </table>
+              <br />
+              <a href=""><button type="button" name="addProduct">Add Product</button></a>
+
+          </div>
+    </body>
+    <script src='connect.js'></script>
 </html>

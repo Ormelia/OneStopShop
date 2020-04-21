@@ -312,4 +312,9 @@ express.delete('/products/:id', function(req, res){
             console.error(err)
         })
 })
+function generateTable(table, data){
+    for(let element of data){
+        let row = table.insertRow();
+    }
+}
 express.listen(3000)
