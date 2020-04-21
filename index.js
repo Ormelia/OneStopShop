@@ -1,26 +1,35 @@
-// const http = require('http');
-// const app = require('./app');
+const port = process.env.PORT || 3000;
 
-// const port = process.env.port || 3000;
-// const server = http.createServer(app);
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
 
-// app.get('/', (req, res) => {
-//     //res.sendFile(path.join(__dirname, 'home.html'));
-//     res.send('hello world');
-// });
+app.use(express.static(__dirname + 'products'));
 
-// server.listen(port);
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
 
 const express = require('express');
 const app = express();
 const path = require('path');
 const port = 3000;
 
-app.get('/home', (req, res) => {
+app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/home.html'))
 });
 
-app.get('/addProduct', (req, res) => {
+app.post('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/productInfo.html'))
 });
+
+app.patch('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend/productInfo.html'))
+});
+
+app.delete('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend/home.html'))
+});
+
+console.log('Server is listening on port ' + port);
 app.listen(port);

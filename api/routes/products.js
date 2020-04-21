@@ -3,8 +3,8 @@ let mongoose = require('mongoose');
 
 const Product = require('../models/product')
 const express = require('express');
-const server = '';//replace with db server
-const db = '';//replace with db name
+const server = 'mongodb://localhost:3000';//replace with db server
+const db = 'products';//replace with db name
 //const morgan = require('morgan')
 const database = client.db('productsdb')
 const corsModule = require('cors')
@@ -14,6 +14,19 @@ const axios = axiosModule.default
 const swaggerJSCodeModule = require('swagger-jsdoc')
 const swaggerUIExpressModule = require('swagger-ui-express')
 const swaggerDocs = swaggerJSCodeModule(swaggerOpts)
+
+
+//DBstuff
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://ormeliarobinson:<ormelia1>@rest-store-gmqad.mongodb.net/test?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true });
+client.connect(err => {
+  const collection = client.db("test").collection("products");
+  // perform actions on the collection object
+  client.close();
+});
+const db = MongoClient.db('test')
+const collection = db.collection('products')
 
 
 express.use(corsModule())
@@ -30,9 +43,7 @@ app.use(morgan('dev'));
 
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb+srv://ormeliarobinson:' + process.env.MONGO_ATLAS_PW + '@rest-store-gmqad.mongodb.net/test?retryWrites=true&w=majority', {
-    useMongoClient: true
-});
+
 //////////////////////////////////////////////////
 
 
@@ -51,8 +62,6 @@ const swaggerOpts = {
     apis: ['products.js'] 
 }
 
-
-
 class Database{
     constructor(){
         this._connect()
@@ -69,6 +78,8 @@ class Database{
     }
 }
 module.exports = new Database()
+// const database = client.db('products')//select database
+// const collection = database.collection('products')
 
 ////////////////////////////////////////////////////
 
@@ -109,10 +120,12 @@ module.exports = new Database()
  */
 express.post('/products', function (req, res){
     console.log(req.body)
+
     let msg =  new Product({
         productCode: req.body.productCode,
         productDesc: req.body.productDesc,
-        productPrice: req.body.productPrice
+        productPrice: req.body.productPrice,
+        //_id: req.body.productCode
     })
 
     msg.save()
@@ -124,6 +137,13 @@ express.post('/products', function (req, res){
             console.error(err)
             res.json(err)
         })
+/////////////////////////////////////////////
+    collection.insertOne({
+        productCode: req.body.productCode,
+        productDesc: req.body.productDesc,
+        productPrice: req.body.productPrice,
+        //_id: req.body.productCode
+    }, (err, result) => {})
 })
 
 // Displays a list of all the products in the shop 
@@ -243,7 +263,8 @@ express.put('/product/:id', function (req, res){
         },{
             productCode: req.body.productCode,
             productDesc: req.body.productDesc,
-            productPrice: req.body.productPrice
+            productPrice: req.body.productPrice,
+            _id: req.body.productCode
         },{
             new: true,
         })
@@ -291,5 +312,4 @@ express.delete('/products/:id', function(req, res){
             console.error(err)
         })
 })
-
 express.listen(3000)
