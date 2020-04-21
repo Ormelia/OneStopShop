@@ -1,9 +1,16 @@
-const mongoose = require('mongoose');
+let mongoose = require('mongoose')
+let validator = require('validator')
 
-const productSchema = mongoose.Schema({
-    _id: {type: Number, required: true},
-    name: {type: String, required: true},
-    price: {type: Number, required: true}
-});
+let productSchema = new mongoose.Schema({
+    productCode: String,
+    productDesc: String,
+    productPrice: {
+        type: Number,
+        required: true,
+        validate: (value) => {
+            return validator.isNumber(value)
+        }
+    }
+})
 
 module.exports = mongoose.model('Product', productSchema);

@@ -13,10 +13,19 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "mongoose": "^5.8.1",
-    "morgan": "^1.9.1"
+    "mongoose": "^5.9.10",
+    "morgan": "^1.9.1",
+    "validator": "^13.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ormelia/OneStopShop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ormelia/OneStopShop/issues"
+  },
+  "homepage": "https://github.com/Ormelia/OneStopShop#readme"
 }
