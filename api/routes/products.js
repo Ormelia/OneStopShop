@@ -3,8 +3,6 @@ let mongoose = require('mongoose');
 
 const Product = require('../models/product')
 const express = require('express');
-const server = 'mongodb://localhost:3000';//replace with db server
-const db = 'products';//replace with db name
 //const morgan = require('morgan')
 const database = client.db('productsdb')
 const corsModule = require('cors')
@@ -16,19 +14,13 @@ const swaggerUIExpressModule = require('swagger-ui-express')
 const swaggerDocs = swaggerJSCodeModule(swaggerOpts)
 
 
-//DBstuff
+//DBstuff///////////////////////////////////////////////////
+//Retrieve
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://ormeliarobinson:<ormelia1>@rest-store-gmqad.mongodb.net/test?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true });
-client.connect(err => {
-  const collection = client.db("test").collection("products");
-  // perform actions on the collection object
-  client.close();
-});
-const db = MongoClient.db('test')
-const collection = db.collection('products')
-
-
+const collection = client.db("test").collection("devices");
+///////////////////////////DB//////////////////////////////
 express.use(corsModule())
 express.use(bodyPareser.urlencoded({extended: false}))
 express.use(bodyPareser.json());
@@ -62,22 +54,22 @@ const swaggerOpts = {
     apis: ['products.js'] 
 }
 
-class Database{
-    constructor(){
-        this._connect()
-    }
+// class Database{
+//     constructor(){
+//         this._connect()
+//     }
 
-    _connect() {
-        mongoose.connect(`mongodb://${server}/${database}`)
-            .then(() => {
-                console.log('Database connection successful')
-            })
-            .catch(err => {
-                console.log('Database connection error')
-            })
-    }
-}
-module.exports = new Database()
+//     _connect() {
+//         mongoose.connect(`mongodb://${server}/${database}`)
+//             .then(() => {
+//                 console.log('Database connection successful')
+//             })
+//             .catch(err => {
+//                 console.log('Database connection error')
+//             })
+//     }
+// }
+// module.exports = new Database()
 // const database = client.db('products')//select database
 // const collection = database.collection('products')
 
@@ -120,30 +112,18 @@ module.exports = new Database()
  */
 express.post('/products', function (req, res){
     console.log(req.body)
-
-    let msg =  new Product({
-        productCode: req.body.productCode,
-        productDesc: req.body.productDesc,
-        productPrice: req.body.productPrice,
-        //_id: req.body.productCode
-    })
-
-    msg.save()
-        .then(doc => {
-            console.log(doc)
-
-        }) 
-        .catch(err => {
-            console.error(err)
-            res.json(err)
+    //connect to db
+    client.connect(err => {
+        if(err) throw err;
+        collection.insertOne({name: req.body.productDesc, price: req.body.productPrice})
+        .then(item => {
+            console.log('Added:', item)
         })
-/////////////////////////////////////////////
-    collection.insertOne({
-        productCode: req.body.productCode,
-        productDesc: req.body.productDesc,
-        productPrice: req.body.productPrice,
-        //_id: req.body.productCode
-    }, (err, result) => {})
+        .catch(err => {
+            console.log(err)
+        })
+
+    });
 })
 
 // Displays a list of all the products in the shop 
@@ -166,18 +146,16 @@ express.post('/products', function (req, res){
  *         description: Database connection problem
  */
 express.get('/products', function(req, res){
-    database.all('SELECT * FROM products', (err, result) => {
-        event = {'Error': "", 'Data': ""}
-        if(err){
-            event.error = err
-            event.data = ""
-        } else {
-            event.data = result
-        }
-        res.json(err)
-    })
-    Product.all
-
+    client.connect(err => {
+        if(err) throw err;
+        collection.find().toArray((err, items))
+        .then(items => {
+            console.log('Retrieved all items: ', items)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    });
 })
 
 // Get a product
@@ -207,17 +185,16 @@ express.get('/products', function(req, res){
 express.get('/products/:id', function(req, res){
     console.log('Product ID: ', req.params.id)
 
-    Product
-        .find({
-            _id: req.params.id
-        })
-        .then(doc => {
-            console.log(doc)
-        })
-        .catch(err => {
-            console.error(err)
-        })
-
+    client.connect(err => {
+        if(err) throw err;
+        collection.findOne({_id: req.params.id})
+            .then(item => {
+                console.log('Found:', item)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    });
 })
 
 
@@ -257,23 +234,18 @@ express.get('/products/:id', function(req, res){
  *         description: Database Connection Problem
  */
 express.put('/product/:id', function (req, res){
-    Product
-        .findOneAndUpdate({
-            _id: req.body.id
-        },{
-            productCode: req.body.productCode,
-            productDesc: req.body.productDesc,
-            productPrice: req.body.productPrice,
-            _id: req.body.productCode
-        },{
-            new: true,
-        })
-        .then(doc => {
-            console.log(doc)
+
+    client.connect(err => {
+        if(err) throw err;
+
+        collection.updateOne({_id: req.params.id}, {'$set': {'name': req.body.productDesc, 'price': req.body.productPrice}})
+        .then(item => {
+            console.log('Updated:', item)
         })
         .catch(err => {
-            console.error(err)
+            console.log(err)
         })
+    });
 })
 
 // Delete user Profile 
@@ -301,20 +273,17 @@ express.put('/product/:id', function (req, res){
  *         description: Database Connection Problem
  */
 express.delete('/products/:id', function(req, res){
-    Product
-        .findOneAndRemove({
-            _id: req.params.id
-        })
-        .then(res => {
-            console.log(res)
-        })
-        .catch(err => {
-            console.error(err)
-        })
+    client.connect(err => {
+        if(err) throw err;
+
+        collection.deleteOne({_id: req.params.id})
+            .then(item => {
+                console.log('Deleted:', item)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    });
 })
-function generateTable(table, data){
-    for(let element of data){
-        let row = table.insertRow();
-    }
-}
+
 express.listen(3000)
