@@ -213,7 +213,7 @@ async function main(a,b){
         console.log('fetching item from db')
         collection.find(item).toArray(function(err, result){
             console.log(result)
-            if(err || result){
+            if(err){
                 console.log('Error fetching result, item doesnt exist')
                 res.send(`Error fetching ${result}, product doesnt exist`)
             } else {
@@ -228,7 +228,7 @@ async function main(a,b){
     /**
      * @swagger 
      * /products/{id}: 
-     *  put: 
+     *  patch: 
      *     name: Update a product
      *     summary: Updates a product in the shop
      *     consumes:
@@ -259,31 +259,31 @@ async function main(a,b){
      *       '500':
      *         description: Database Connection Problem
      */
-    app.put('/products/:id', function (req, res){
+    app.patch('/products/:id', function (req, res){
         const collection = client.db("test").collection("products");
         console.log('Product ID: ', req.params.id)
-        
+
         const item = {"_id": ObjectId(req.params.id)}
-        const newItem = {"$set": 
-                            {"name": req.body.productDesc, 
-                             "price": req.body.productPrice}
+        const newItem = {$set: 
+                            {"name": req.body.name, 
+                             "price": req.body.price}
                         }
 
+        console.log(item)
+        console.log(newItem)
 
         collection.update(item, newItem, function(err, result){
             console.log('//////////////////////////////////////////////////////////')
-            console.log(result)
+            //console.log(result)
             console.log('//////////////////////////////////////////////////////////')
-            if(err || result == null){
-                console.log('Error Fetching collection.findOne()')
+            if(err){
+                console.log('Error Updating Product collection.findOne()')
+                res.send(`Error fetching ${result}, product doesnt exist`)
             } else {
-                console.log('Retrieved item')
+                console.log('Updated Product')
                 res.json(result)
             }
         })
-
-
-        collection.updateOne({_id: req.params.id}, )
     })
 
     // Delete user Profile 
@@ -316,7 +316,7 @@ async function main(a,b){
         console.log('Product ID: ', req.params.id)
 
         collection.deleteOne(item, function(err, result){
-            if(err || result){
+            if(err){
                 console.log(`Error Deleting: ${item}, product not in Shop`)
             } else {
                 console.log('Deleted product')
@@ -324,17 +324,6 @@ async function main(a,b){
             }
         })
     })
-
-
-
-// client.connect(err => {
-//     const collection = client.db("test").collection("products");
-//     // perform actions on the collection object
-//     client.close();
-//   });
-//const collection = client.db("test").collection("devices");
-///////////////////////////DB//////////////////////////////
-//express.use(corsModule())
 console.log('After acync')
 
 
