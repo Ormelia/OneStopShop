@@ -29,16 +29,15 @@
 
           </div>
           <div>
-            <form productForm= "productForm">       
-              <label for="code" class="labels">Code:</label>  
-              <input class="inputs" type="text" name="code" required/>  <br /><br />
+            <form name = "productForm" id = "productForm">
               <label for="desc" class="labels">Name:</label>  
-              <textarea class="inputs" name="desc" id="desc" required></textarea>  <br /><br /><br /><br />
-              <label for="price" class="labels">Price:</label>  
-              <input class="inputs" type="number" step="0.01" name="price" required/>  <br /><br />
+              <textarea class="inputs" type="text" name="name" id="name" required></textarea>  <br /><br /><br /><br />
 
-              <input class="productsButtons" type="submit" name="update" value="Update Product List" /> 
-              <a href="/home"><button type="button" name="viewProducts">View Products</button></a>
+              <label for="price" class="labels">Price:</label>  
+              <input class="inputs" type="number" step="0.01" name="price" it = "price" required/>  <br /><br />
+
+              <input class="productsButtons" type="submit" name="saveUpdateBtn" id="saveUpdate" value="Update Product List" /> 
+              <button type="button" name="viewProducts">View Products</button>
           </form>
 
           </div>

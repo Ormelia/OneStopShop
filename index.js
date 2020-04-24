@@ -1,74 +1,40 @@
-// const port = process.env.PORT || 3000;
+const axiosModule = require('axios')
+const axios = axiosModule.default
+var http = require('http');
 
-
-// const bodyParser = require('body-parser');
-
-// app.use(express.static(__dirname + 'products'));
-
-// app.use(bodyParser.urlencoded({extended: true}));
-// app.use(bodyParser.json());
-
-// const path = require('path');
-
-// app.get('/products', function (req, res){
-//     //res.sendFile(path.join(__dirname, 'frontend/home.html'))
-//     res.send(req.body)
-// })
-// app.get('products/:id', function (req, res){
-//     res.sendFile(path.join(__dirname, 'frontend/home.html'))
-//     //res.send(req.params)
-// })
-// app.post('/products', function (req, res){
-//     res.sendFile(path.join(__dirname, 'frontend/home.html'))
-//     //res.send(req.body)
-// })
-// app.patch('products/:id', function (req, res){
-//     res.sendFile(path.join(__dirname, 'frontend/home.html'))
-//     //res.send(req.params, req.body)
-// })
-// app.delete('products/:id', function (req, res){
-
-//     res.send( req.params)
-// })
-
-    
-// console.log('Server is listening on port ' + port);
-// app.listen(port);
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-//let Product = require('./product')
 let mongoose = require('mongoose');
 const express = require('express');
 const app = express();
-//const Product = require('../models/product')
-//var productRoutes = require('./index')
-//const express = require('express');
+
 const morgan = require('morgan')
-//const database = client.db('productsdb')
-//const corsModule = require('cors')
 const bodyPareser = require('body-parser')
 mongoose.Promise = global.Promise;
 var ObjectId = require('mongodb').ObjectID
-//const axiosModule = require('axios')
-//const axios = axiosModule.default
-//const axiosModule = require('axios')
 
-// const swaggerJSCodeModule = require('swagger-jsdoc')
-// const swaggerUIExpressModule = require('swagger-ui-express')
-// const swaggerDocs = swaggerJSCodeModule(swaggerOpts)
+const swaggerOpts = {
+    swaggerDefinition: {
+        info: {
+            title: 'One Stop Shop', 
+            description: 'One Stop Shop Documentation', 
+            constact: {
+                name: 'Ormelia Robinson', 
+                email: 'orobins5@uncc.edu'
+            }
+        }, 
+        servers: ['http://167.172.150.145:5000 odr']
+    }, 
+    apis: ['products.js'] 
+}
+
+const swaggerJSCodeModule = require('swagger-jsdoc')
+const swaggerUIExpressModule = require('swagger-ui-express')
+const swaggerDocs = swaggerJSCodeModule(swaggerOpts)
 
 app.use(bodyPareser.urlencoded({extended: false}))
 app.use(bodyPareser.json());
-app.use(bodyPareser.urlencoded({extended: false}))
-app.use(bodyPareser.json());
-//app.use('/docs', swaggerUIExpressModule.serve, swaggerUIExpressModule.setup(swaggerDocs))
+app.use('/docs', swaggerUIExpressModule.serve, swaggerUIExpressModule.setup(swaggerDocs))
 
-//routes that will handle requests
-//app.use('/products', productRoutes);
-app.use(express.static('frontend'));
+app.use('/', express.static('frontend/home.html'));
 app.use(morgan('dev'));
 //DBstuff///////////////////////////////////////////////////
 //Retrieve
@@ -91,7 +57,13 @@ async function main(a,b){
 
     main().catch(console.error);
 
+    var path = require('path');
+    // app.use(express.static('frontend'));
+    // app.get('/', function(req, res) {
+    //     res.sendFile(path.join(__dirname,'frontend', 'home.html'));
+    // });
 
+    app.set("/products", path.join(__dirname, "frontend", "home.html"));
 
     // Displays a list of all the products in the shop 
     /**
@@ -332,20 +304,7 @@ console.log('After acync')
 //////////////////////////////////////////////////
 
 
-const swaggerOpts = {
-    swaggerDefinition: {
-        info: {
-            title: 'One Stop Shop', 
-            description: 'One Stop Shop Documentation', 
-            constact: {
-                name: 'Ormelia Robinson', 
-                email: 'orobins5@uncc.edu'
-            }
-        }, 
-        servers: ['http://167.172.150.145:5000 odr']
-    }, 
-    apis: ['products.js'] 
-}
+
 
 ////////////////////////////////////////////////////
 
