@@ -10,36 +10,14 @@ const url = 'http://localhost:3000/products';
 // });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function addForm(){
-//     document.getElementById('add_product').style.display = "block";
-//     document.getElementById('display_products').style.display = "none";
-//     document.getElementById('edit_product').style.display = "none"; 
-//     document.forms['add_product'].productCode.value = ""
-//     document.forms['add_product'].productDesc.value = ""
-//     document.forms['add_product'].productPrice.value = ""
-// }
+function productForm(){
+    document.getElementById('add_product').style.display = "block";
+    document.getElementById('display_products').style.display = "none";
+    document.getElementById('edit_product').style.display = "none"; 
+    document.forms['add_product'].productCode.value = ""
+    document.forms['add_product'].productDesc.value = ""
+    document.forms['add_product'].productPrice.value = ""
+}
 
 // function editForm(_id){
 //     console.log(productCode)
