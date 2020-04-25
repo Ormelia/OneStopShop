@@ -5,7 +5,7 @@ var http = require('http');
 let mongoose = require('mongoose');
 const express = require('express');
 const app = express();
-
+const cors = require('cors');
 const morgan = require('morgan')
 const bodyPareser = require('body-parser')
 mongoose.Promise = global.Promise;
@@ -33,14 +33,15 @@ const swaggerDocs = swaggerJSCodeModule(swaggerOpts)
 app.use(bodyPareser.urlencoded({extended: false}))
 app.use(bodyPareser.json());
 app.use('/docs', swaggerUIExpressModule.serve, swaggerUIExpressModule.setup(swaggerDocs))
-
+app.use(cors());
 app.use('/', express.static('frontend/home.html'));
 app.use(morgan('dev'));
 //DBstuff///////////////////////////////////////////////////
-//Retrieve
+
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://ormeliarobinson:ormelia1@rest-store-gmqad.mongodb.net/test?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true , useUnifiedTopology: true });
+/////////////////////////////////////////////////////////////////////////
 console.log('Before async')
 async function main(a,b){
     try{
