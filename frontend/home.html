@@ -7,28 +7,13 @@
         <title>One Stop Shop</title>
     </head>
     <body>
-          <h2>Products</h2>
-          <div id='displayProducts'> 
-              <table>
-                  <tr>
-                      <th>Code</th>
-                      <th>Description</th> 
-                      <th>Price</th>
-                  </tr>
-                      <tr>
-                          <td>${item.code}</td>
-                          <td>${item.description}</td> 
-                          <td>${item.priceCurrencyFormat}</td>
+          <h1>Ormelia's One Stop Shop</h1>
+          
+          <button onclick="displayProducts()" id="openDoors" >Open the doors</button>
 
 
-                          <td><button name = editButton onclick='return editProduct()'>Edit</button></td>
-                          <td><button name = deleteButton onclick='return deleteProduct()'>Delete</Button></td>
-                      </tr>
-              </table>
-              <br />
-              <a href=""><button type="button" name="addProduct">Add Product</button></a>
-          </div>
-          </div>
+          <div id="displayProducts"></div>
+          
           <div id = "editForm">
             <form name = "editForm">
                 <table>
@@ -47,7 +32,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <button type="button" name="editFormButton" onclick="updateProduct()">Update Product </button>
+                            <button type="button" name="editFormButton" onclick="return updateProduct()">Update Product </button>
                             <button type="button" name="viewProducts" onclick="displayProducts()">View Products</button>
                         </td>
                     </tr>
@@ -68,7 +53,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <button type="button" name="addFormButton" onclick="addProduct()">Update Product </button>
+                            <button type="button" name="addFormButton" onclick="return addProduct()">Add</button>
                             <button type="button" name="viewProducts" onclick="displayProducts()">View Products</button>
                         </td>
                     </tr>
@@ -77,5 +62,4 @@
           </div>
     </body>
     <script src='connect.js'></script>
-    <script type="text/javascript" src="jquery-3.3.1.js"></script>
 </html>

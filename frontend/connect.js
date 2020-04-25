@@ -1,5 +1,13 @@
 const server = 'http:// serverodr'
 
+openShop();
+
+function openShop(){
+    document.getElementById('openDoors').style.display = "block";
+    document.getElementById('addForm').style.display = "none";
+    document.getElementById('displayProducts').style.display = "none";
+    document.getElementById('editForm').style.display = "none"; 
+}
 
 
 //////HTML displays////////////////////////////////////////////
@@ -63,6 +71,22 @@ function addProduct(){
     return false;
 }
 
+//retrieves products from GET
+function listProducts(){
+    axios.get(server + 'users')
+    .then((response)=>{
+        if (response.error != ""){
+            console.log(response.data)
+            productTable(response.data)
+        } else {
+            console.log(err)
+        }
+    })
+    .catch((connectionError)=>{
+        console.log(connectionError)
+    })
+}
+
 //edit product from PATCH
 function updateProduct(){
     _id = document.getElementById('_id').innerHTML
@@ -106,21 +130,6 @@ function deleteProduct(_id){
     })
 }
 
-//retrieves products from GET
-function listProducts(){
-    axios.get(server + 'users')
-    .then((response)=>{
-        if (response.error != ""){
-            console.log(response.data)
-            productTable(response.data)
-        } else {
-            console.log(err)
-        }
-    })
-    .catch((connectionError)=>{
-        console.log(connectionError)
-    })
-}
 
 ////////generate product table///
 function productTable(result){
@@ -148,7 +157,7 @@ function productTable(result){
         let editLink = document.createElement('a')
         editLink.name = 'editLink'
         editLink.addEventListener('click', ()=>{
-            showEditForm(result.data[i]._id) // pass the id
+            showEditForm(result.data[i]._id)
         })
         editLink.text = 'Edit'
         editLink.href = '#'
@@ -157,7 +166,6 @@ function productTable(result){
         let deleteLink = document.createElement('a')
         deleteLink.name = 'deleteLink'
         deleteLink.addEventListener('click', ()=>{
-            // deleteEmployee(dataObject[i].employeeID)
             if (confirm('Confirm Delete?')){
                 deleteProduct(result.data[i]._id)
                 console.log('delete link', result.data[i]._id)

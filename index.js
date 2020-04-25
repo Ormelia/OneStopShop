@@ -21,9 +21,9 @@ const swaggerOpts = {
                 email: 'orobins5@uncc.edu'
             }
         }, 
-        servers: ['http://167.172.150.145:5000 odr']
+        servers: ['http://server odr']
     }, 
-    apis: ['products.js'] 
+    apis: ['index.js'] 
 }
 
 const swaggerJSCodeModule = require('swagger-jsdoc')
