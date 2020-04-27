@@ -21,7 +21,7 @@ const swaggerOpts = {
                 email: 'orobins5@uncc.edu'
             }
         }, 
-        servers: ['http://server odr']
+        servers: ['http://159.89.176.184/3000']
     }, 
     apis: ['index.js'] 
 }
@@ -34,7 +34,7 @@ app.use(bodyPareser.urlencoded({extended: false}))
 app.use(bodyPareser.json());
 app.use('/docs', swaggerUIExpressModule.serve, swaggerUIExpressModule.setup(swaggerDocs))
 app.use(cors());
-app.use('/', express.static('frontend/home.html'));
+//app.use('/', express.static('frontend/home.html'));
 app.use(morgan('dev'));
 //DBstuff///////////////////////////////////////////////////
 
@@ -64,8 +64,8 @@ async function main(a,b){
     //     res.sendFile(path.join(__dirname,'frontend', 'home.html'));
     // });
 
-    app.set("/products", path.join(__dirname, "frontend", "home.html"));
-
+    //app.set("/products", path.join(__dirname, "frontend", "home.html"));
+    
     // Displays a list of all the products in the shop 
     /**
      * @swagger 

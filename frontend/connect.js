@@ -1,4 +1,4 @@
-const server = 'http:// serverodr'
+const server = 'http://159.89.176.184/3000'
 
 openShop();
 
