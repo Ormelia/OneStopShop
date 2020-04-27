@@ -1,7 +1,7 @@
 const axiosModule = require('axios')
 const axios = axiosModule.default
 var http = require('http');
-
+const port = process.env.PORT || 3000
 let mongoose = require('mongoose');
 const express = require('express');
 const app = express();
@@ -34,9 +34,9 @@ app.use(bodyPareser.urlencoded({extended: false}))
 app.use(bodyPareser.json());
 app.use('/docs', swaggerUIExpressModule.serve, swaggerUIExpressModule.setup(swaggerDocs))
 app.use(cors());
-//app.use('/', express.static('frontend/home.html'));
+app.use('/', express.static('frontend/home.html'));
 app.use(morgan('dev'));
-//DBstuff///////////////////////////////////////////////////
+//DBstuff///////////////http://159.89.176.184:3000/products////////////////////////////////////
 
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://ormeliarobinson:ormelia1@rest-store-gmqad.mongodb.net/test?retryWrites=true&w=majority";
@@ -48,6 +48,7 @@ async function main(a,b){
         console.log('Trying connection')
         await client.connect();
         console.log('Connection success')
+        console.log(`App listening on port: ${port}, Live located: http://159.89.176.184:${port}/products`)
             } catch(e){
                 console.error('Error connecting to databse', e)
             } finally {
@@ -311,4 +312,4 @@ console.log('After acync')
 
 
 
-app.listen(3000)
+app.listen(port)
